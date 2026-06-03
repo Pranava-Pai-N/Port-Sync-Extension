@@ -4,7 +4,7 @@
   "publisher": "pranava-pai-n",
   "author": "Pranava Pai N",
   "description": "Monitor and map active development ports in real-time.",
-  "icon": "./src/assets/Icon.png",
+  "icon": "src/assets/Icon.png",
   "version": "0.0.1",
   "readme": "./README.md",
   "engines": {
