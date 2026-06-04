@@ -95,6 +95,10 @@ PortSync is licensed under the MIT License. See the [`LICENSE`](https://github.c
 ## CHANGELOG
 Project versions and changes included in each version can be viewed in the [`CHANGELOG.md`](https://github.com/Pranava-Pai-N/Port-Sync-Extension/blob/main/CHANGELOG.md) file.
 
+## Download from Marketplace
+```bash
+https://marketplace.visualstudio.com/items?itemName=pranava-pai-n.portsync
+```
 
 ## Developer
 
