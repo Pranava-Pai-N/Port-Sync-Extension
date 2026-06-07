@@ -13,6 +13,7 @@ PortSync is a VS Code extension that helps developers keep track of active ports
 * Command palette integration for quick activation
 * Designed for local development workflows and debugging sessions
 * Compatible with Windows, Mac and Linux
+* Search feature added for easy port retrieval among many ports
 
 ## How to Use
 

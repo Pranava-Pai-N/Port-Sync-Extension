@@ -145,6 +145,57 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         margin-top: 24px;
         font-style: italic;
       }
+
+      .search-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        color: #858585;
+        pointer-events: none;
+        transition: color 0.2s ease;
+      }
+
+      #search-ports {
+        width: 180px;
+        padding: 6px 10px 6px 32px;
+        background-color: #2d2d2d;
+        color: #cccccc;
+        border: 1px solid #3c3c3c;
+        border-radius: 4px;
+        font-size: 12px;
+        transition: all 0.2s ease-in-out;
+      }
+
+      #search-ports:hover {
+        background-color: #333333;
+        border-color: #4c4c4c;
+      }
+
+      #search-ports:focus {
+        outline: none;
+        width: 220px; 
+        background-color: #2d2d2d;
+        border-color: #007acc; /* VS Code Blue */
+        color: #ffffff;
+      }
+
+      #search-ports:focus + .search-icon {
+        color: #007acc; 
+      }
+
+      #search-ports::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        height: 12px;
+        width: 12px;
+        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23858585'><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg>") no-repeat 50% 50%;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -156,6 +207,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         </svg>
       </button>
     </div>
+
+    <div class="header-actions">
+    <div class="search-wrapper">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+      </svg>
+      <input type="search" id="search-ports" placeholder="Filter active ports ..." autocomplete="off">
+    </div>
+    <br></br>
     
     <div id="services-list" class="services-container">
       <div class="empty-state">Scanning workspace folders ...</div>
@@ -163,38 +223,61 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     <script>
       const vscode = acquireVsCodeApi();
+      const container = document.getElementById('services-list');
+      const searchInput = document.getElementById('search-ports');
+      
+      let localServicesCache = [];
 
       document.getElementById('refresh').addEventListener('click', () => {
         vscode.postMessage({ command: 'triggerRefresh' });
       });
 
-      window.addEventListener('message', event => {
-        const services = event.data;
-        const container = document.getElementById('services-list');
-        
-        if (!services || services.length === 0) {
-          container.innerHTML = '<div class="empty-state">No active development ports detected.</div>';
+      function renderServices(servicesList) {
+        if (!servicesList || servicesList.length === 0) {
+          container.innerHTML = '<div class="empty-state">No matching active ports.Please refine your search and try again.</div>';
           return;
         }
 
-        container.innerHTML = services.map(s => {
-
-        const isActive = s.status === 'Active';
-          const badgeClass = isActive ? 'active' : 'inactive';
+        container.innerHTML = servicesList.map(function(s) {
+          var isActive = s.status === 'Active';
+          var badgeClass = isActive ? 'active' : 'inactive';
           
-          return \`
-            <div class="service-card">
-              <div class="service-info">
-                <span class="service-name">\${s.name}</span>
-                <span class="service-port">localhost:\${s.port}</span>
-              </div>
-              <div class="status-badge \${badgeClass}">
-                <span class="status-dot"></span>
-                \${s.status}
-              </div>
-            </div>
-          \`;
+          return '<div class="service-card">' +
+              '<div class="service-info">' +
+                '<span class="service-name">' + s.name + '</span>' +
+                '<span class="service-port">localhost:' + s.port + '</span>' +
+              '</div>' +
+              '<div class="status-badge ' + badgeClass + '">' +
+                '<span class="status-dot"></span>' +
+                s.status +
+              '</div>' +
+            '</div>';
         }).join('');
+      }
+
+      window.addEventListener('message', event => {
+        const services = event.data;
+        localServicesCache = services || []; 
+        
+        searchInput.value = ''; 
+        renderServices(localServicesCache);
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+          renderServices(localServicesCache);
+          return;
+        }
+
+        const filtered = localServicesCache.filter(s => {
+          const nameMatch = s.name ? s.name.toLowerCase().includes(query) : false;
+          const portMatch = s.port ? s.port.toString().includes(query) : false;
+          return nameMatch || portMatch;
+        });
+
+        renderServices(filtered);
       });
     </script>
   </body>
