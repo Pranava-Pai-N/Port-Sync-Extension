@@ -3,15 +3,7 @@ import fs from "fs";
 import * as net from "net";
 import { exec } from "child_process";
 import { SidebarProvider } from './views/sideBar';
-
-
-export interface PortItems {
-	name: string
-	port: number
-	status?: "Active" | "Inactive"
-}
-
-type portStatus = "Active" | "Inactive";
+import { PortItems, portStatus } from "./types/portTypes";
 
 
 function checkTerminal(cmd: string): Promise<string> {
@@ -45,7 +37,7 @@ async function discoverActivePorts(): Promise<PortItems[]> {
 					discoveredPorts.push({
 						name: `Port - ${portNumber}`,
 						port: portNumber,
-						status : "Inactive"
+						status: "Inactive"
 					});
 				}
 			}

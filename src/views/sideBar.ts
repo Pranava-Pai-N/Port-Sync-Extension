@@ -234,6 +234,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
       function renderServices(servicesList) {
         if (!servicesList || servicesList.length === 0) {
+          container.innerHTML = '<div class="empty-state">No active ports found. All development ports are free!</div>';
+          return;
+        }
+
+        if(!servicesList.length === 0){
           container.innerHTML = '<div class="empty-state">No matching active ports.Please refine your search and try again.</div>';
           return;
         }

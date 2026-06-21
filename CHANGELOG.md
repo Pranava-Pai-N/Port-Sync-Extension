@@ -18,3 +18,9 @@ See [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to
 - Added search functionality for quick retrieval of active ports from large number of ports.
 - Minor bugs fixed and new features added as per the requirements.
 - Minor UI Fixes implemented along with the inital release fixes.
+
+
+## [0.0.3] - 21-06-2026
+- Handled linting errors and type safety check for the port items.
+- Minor sidebar UI changes and handled no port logic.
+- Minor bug fixes and product release handled.
