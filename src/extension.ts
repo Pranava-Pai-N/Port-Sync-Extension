@@ -4,7 +4,7 @@ import * as net from "net";
 import { exec } from "child_process";
 import { SidebarProvider } from './views/sideBar';
 import { PortItems, portStatus } from "./types/portTypes";
-
+import { commonPorts } from './data/ports';
 
 function checkTerminal(cmd: string): Promise<string> {
 	return new Promise((resolve) => {
@@ -44,8 +44,6 @@ async function discoverActivePorts(): Promise<PortItems[]> {
 		} catch (error: any) {
 			console.error(`Error reading file ${file.fsPath}:`, error);
 		}
-
-		const commonPorts = [3000, 3001, 5000, 5173, 8000, 8080, 27017, 5432, 6379];
 
 		const isWindows = process.platform === 'win32';
 

@@ -24,3 +24,6 @@ See [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to
 - Handled linting errors and type safety check for the port items.
 - Minor sidebar UI changes and handled no port logic.
 - Minor bug fixes and product release handled.
+
+## [0.0.4] - 15-10-2026
+- Added support to ports of different frameworks and commonly used ports - 30 Commonly used ports
